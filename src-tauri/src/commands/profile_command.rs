@@ -68,6 +68,7 @@ pub struct UpdateProfileParams {
     norisk_information: Option<crate::state::profile_state::NoriskInformation>,
     preferred_account_id: Option<String>,
     clear_preferred_account: Option<bool>,
+    hidden: Option<bool>,
 }
 
 // Neue DTO für den copy_profile Command
@@ -752,6 +753,12 @@ async fn try_update_profile(id: Uuid, params: UpdateProfileParams) -> Result<(),
             "preferred_account_id not explicitly changed or cleared for profile {}. Current: {:?}",
             id, profile.preferred_account_id
         );
+    }
+
+    // Handle hidden
+    if let Some(hidden) = params.hidden {
+        info!("Updating hidden status to: {} for profile {}", hidden, id);
+        profile.hidden = hidden;
     }
 
     // Check if mods directory location needs to change (using the params copy from above)

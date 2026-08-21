@@ -172,6 +172,9 @@ pub struct Profile {
     /// Incremented on process-exit via `ProcessManager` using `start_time - exit_time`.
     #[serde(default)]
     pub playtime_seconds: u64,
+    /// Indicates whether the profile is hidden from the main list.
+    #[serde(default)]
+    pub hidden: bool,
 }
 
 impl Profile {

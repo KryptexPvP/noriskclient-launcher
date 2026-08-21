@@ -233,6 +233,7 @@ export interface Profile {
   modpack_info?: ModPackInfo | null;
   preferred_account_id: string | null;
   playtime_seconds?: number;
+  hidden?: boolean;
 }
 
 export interface ProfileGroup {
@@ -278,6 +279,7 @@ export interface UpdateProfileParams {
   norisk_information?: NoriskInformation | null;
   preferred_account_id?: string | null;
   clear_preferred_account?: boolean;
+  hidden?: boolean;
 }
 
 export interface CopyProfileParams {

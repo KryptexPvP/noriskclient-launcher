@@ -24,6 +24,7 @@ import { parseMotdToHtml } from "../../utils/motd-utils";
 import { useTranslation } from "react-i18next";
 import { usePinnedProfilesStore } from "../../store/usePinnedProfilesStore";
 import { useResolvedLoaderVersion } from "../../hooks/useResolvedLoaderVersion";
+import * as ProfileService from "../../services/profile-service";
 
 // Custom JSX component for tooltip content
 function StandardVersionTooltipContent() {
@@ -186,6 +187,22 @@ export function ProfileCardV2({
         }
       },
     }] : []),
+    {
+      id: "toggle_hidden",
+      label: profile.hidden ? t('profiles.unhide', 'Unhide Profile') : t('profiles.hide', 'Hide Profile'),
+      icon: profile.hidden ? "solar:eye-bold" : "solar:eye-closed-bold",
+      separator: true,
+      onClick: async (profile) => {
+        try {
+          await ProfileService.updateProfile(profile.id, { hidden: !profile.hidden });
+          const { fetchProfiles } = useProfileStore.getState();
+          await fetchProfiles();
+        } catch (err) {
+          console.error("Failed to toggle profile hidden status:", err);
+          toast.error(t('profiles.toast.error_toggling_hidden', 'Failed to update profile visibility'));
+        }
+      },
+    },
     {
       id: "delete",
       label: t('profiles.delete'),

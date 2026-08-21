@@ -105,7 +105,7 @@ export function ProfilesTabV2() {
   // Get unique profile groups dynamically (normalized to lowercase)
   const getUniqueProfileGroups = () => {
     const uniqueGroups = new Set<string>();
-    profiles.forEach(profile => {
+    profiles.filter(p => !p.hidden).forEach(profile => {
       if (profile.group && profile.group.trim() !== "") {
         // Normalize to lowercase to avoid duplicates like "Custom" and "CUSTOM"
         uniqueGroups.add(profile.group.toLowerCase());
@@ -129,12 +129,16 @@ export function ProfilesTabV2() {
   };
 
   // Whether a profile belongs to the currently active group tab.
-  const profileMatchesActiveGroup = (profile: Profile): boolean =>
-    activeGroup === "all" ||
-    (activeGroup === "nrc" && isNrcGroup(profile.group)) ||
-    (activeGroup === "server" && profile.group === "SERVER") ||
-    (activeGroup === "modpacks" && profile.group === "MODPACKS") ||
-    (!!profile.group && profile.group.toLowerCase() === activeGroup);
+  const profileMatchesActiveGroup = (profile: Profile): boolean => {
+    if (activeGroup === "hidden") return profile.hidden === true;
+    if (profile.hidden) return false;
+
+    return activeGroup === "all" ||
+      (activeGroup === "nrc" && isNrcGroup(profile.group)) ||
+      (activeGroup === "server" && profile.group === "SERVER") ||
+      (activeGroup === "modpacks" && profile.group === "MODPACKS") ||
+      (!!profile.group && profile.group.toLowerCase() === activeGroup);
+  };
 
   // Major version buckets present in the active group, with counts, sorted newest-first.
   const getVersionFilterOptions = (): { value: string; count: number }[] => {
@@ -150,15 +154,19 @@ export function ProfilesTabV2() {
 
   // Calculate group counts based on current search/filter
   const getFilteredCountForGroup = (groupId: string) => {
-    if (groupId === "all") return profiles.length;
+    if (groupId === "hidden") return profiles.filter(p => p.hidden).length;
+
+    const visibleProfiles = profiles.filter(p => !p.hidden);
+
+    if (groupId === "all") return visibleProfiles.length;
     
     // Handle default groups
-    if (groupId === "nrc") return profiles.filter(p => isNrcGroup(p.group)).length;
-    if (groupId === "server") return profiles.filter(p => p.group === "SERVER").length;
-    if (groupId === "modpacks") return profiles.filter(p => p.group === "MODPACKS").length;
+    if (groupId === "nrc") return visibleProfiles.filter(p => isNrcGroup(p.group)).length;
+    if (groupId === "server") return visibleProfiles.filter(p => p.group === "SERVER").length;
+    if (groupId === "modpacks") return visibleProfiles.filter(p => p.group === "MODPACKS").length;
     
     // Handle dynamic groups (groupId is normalized lowercase, compare with profile.group in lowercase)
-    return profiles.filter(p => p.group && p.group.toLowerCase() === groupId).length;
+    return visibleProfiles.filter(p => p.group && p.group.toLowerCase() === groupId).length;
   };
 
   // Create groups array with default groups + dynamic groups
@@ -183,7 +191,10 @@ export function ProfilesTabV2() {
         count: getFilteredCountForGroup(group), // Use the updated function
       }));
 
-    return [...defaultGroups, ...dynamicGroups];
+    const hiddenCount = getFilteredCountForGroup("hidden");
+    const hiddenTab: GroupTab[] = hiddenCount > 0 ? [{ id: "hidden", name: t('profiles.hidden', 'Hidden'), count: hiddenCount }] : [];
+
+    return [...defaultGroups, ...dynamicGroups, ...hiddenTab];
   };
 
   const groups = createGroups();
