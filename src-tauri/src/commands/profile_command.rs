@@ -1627,6 +1627,7 @@ pub async fn copy_profile(params: CopyProfileParams) -> Result<Uuid, CommandErro
         last_played: None,
         settings: source_profile.settings.clone(),
         state: ProfileState::NotInstalled, // Neues Profil ist noch nicht installiert
+        hidden: false,
         mods: source_profile.mods.clone(), // Kopiere die Modrinth-Mods aus dem Quellprofil
         selected_norisk_pack_id: source_profile.selected_norisk_pack_id.clone(),
         disabled_norisk_mods_detailed: source_profile.disabled_norisk_mods_detailed.clone(),
@@ -3017,6 +3018,7 @@ pub async fn launch_temp_profile(args: TempLaunchArgs) -> Result<(), CommandErro
         last_played: None,
         settings: ProfileSettings::default(),
         state: ProfileState::NotInstalled,
+        hidden: false,
         mods: Vec::new(),
         selected_norisk_pack_id: args.pack.clone(),
         disabled_norisk_mods_detailed: HashSet::new(),

@@ -1347,6 +1347,7 @@ pub async fn process_curseforge_pack_from_zip(pack_path: &Path) -> Result<(Profi
         loader_version,
         created: Utc::now(),
         last_played: None,
+        hidden: false,
         settings: ProfileSettings {
             memory: memory_settings,
             ..ProfileSettings::default()

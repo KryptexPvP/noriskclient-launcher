@@ -208,6 +208,7 @@ pub async fn process_mrpack(pack_path: PathBuf) -> Result<(Profile, ModrinthInde
         last_played: None,
         settings: ProfileSettings::default(),
         state: ProfileState::NotInstalled,
+        hidden: false,
         mods: Vec::new(),
         selected_norisk_pack_id: None,
         disabled_norisk_mods_detailed: HashSet::new(),
