@@ -177,6 +177,7 @@ pub async fn create_profile(params: CreateProfileParams) -> Result<Uuid, Command
         last_played: None,
         settings: ProfileSettings::default(),
         state: ProfileState::NotInstalled,
+        hidden: false,
         mods: Vec::new(),
         selected_norisk_pack_id: params.selected_norisk_pack_id.clone(),
         disabled_norisk_mods_detailed: HashSet::new(),
