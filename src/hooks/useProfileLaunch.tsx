@@ -43,7 +43,7 @@ export function useProfileLaunch(options: UseProfileLaunchOptions) {
   const setButtonStatusMessage = useLaunchStateStore((s) => s.setButtonStatusMessage);
   const setLaunchError = useLaunchStateStore((s) => s.setLaunchError);
 
-  const { isButtonLaunching, buttonStatusMessage, launchState } =
+  const { isButtonLaunching, buttonStatusMessage, launchState, launchProgress } =
     useLaunchStateStore((s) => s.profiles[profileId] ?? DEFAULT_PROFILE_STATE);
 
   // Initialize profile on mount
@@ -80,7 +80,7 @@ export function useProfileLaunch(options: UseProfileLaunchOptions) {
               onLaunchError?.(eventErrorMsg);
             } else {
               if (eventMessage) {
-                setButtonStatusMessage(profileId, eventMessage);
+                setButtonStatusMessage(profileId, eventMessage, event.payload.progress ?? null);
               }
             }
           }
@@ -429,6 +429,7 @@ export function useProfileLaunch(options: UseProfileLaunchOptions) {
     isLaunching: isButtonLaunching,
     statusMessage: buttonStatusMessage,
     launchState,
+    launchProgress,
     handleLaunch,
     handleQuickPlayLaunch,
   };

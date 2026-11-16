@@ -3129,5 +3129,8 @@
   "support_request.preview.empty": "(leer)",
   "support_request.preview.partial": "Nicht alles wird hier angezeigt – geschickt wird alles.",
   "support_request.error.other_account_button": "Mit anderem Account versuchen",
-  "support_request.error.busy": "Einen Moment, das läuft noch."
+  "support_request.error.busy": "Einen Moment, das läuft noch.",
+  "settings.launch_progress": "Fortschrittsbalken im Play-Button",
+  "settings.launch_progress.tooltip": "Zeigt beim Starten, wie weit Downloads und Installation sind.",
+  "launch.progress_label": "Startfortschritt"
 }

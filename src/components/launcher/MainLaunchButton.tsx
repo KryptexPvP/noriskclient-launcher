@@ -10,6 +10,7 @@ import { LaunchState } from "../../store/launch-state-store";
 import { Button } from "../ui/buttons/Button";
 import { IconButton } from "../ui/buttons/IconButton";
 import { RolloutIndicator } from "./RolloutIndicator";
+import { LaunchProgressBar } from "./LaunchProgressBar";
 
 import { useThemeStore } from "../../store/useThemeStore";
 import { useVersionSelectionStore } from "../../store/version-selection-store";
@@ -52,7 +53,8 @@ export function MainLaunchButton({
   const navigate = useNavigate();
 
   // Use the profile launch hook for launch logic
-  const { handleLaunch: hookHandleLaunch, isLaunching, statusMessage, launchState } = useProfileLaunch({
+  const showLaunchProgress = useThemeStore((s) => s.showLaunchProgress);
+  const { handleLaunch: hookHandleLaunch, isLaunching, statusMessage, launchState, launchProgress } = useProfileLaunch({
     profileId: selectedVersion,
     onLaunchSuccess: () => {
       setTransientSuccessActive(true);
@@ -193,20 +195,28 @@ export function MainLaunchButton({
     >
       <div className="flex flex-col gap-3">
         <div className="flex items-center relative">
-          <Button
-            onClick={handleLaunch}
-            disabled={
-              !selectedVersion ||
-              (versions && versions.length === 0 && !selectedVersion)
-            }
-            size="xl"
-            icon={undefined}
-            variant={getButtonVariant()}
-            className={cn("flex-1 rounded-r-none", mainButtonWidth)}
-            heightClassName={mainButtonHeight}
-          >
-            {renderLaunchButtonContent()}
-          </Button>
+          <div className="relative flex flex-1">
+            <Button
+              onClick={handleLaunch}
+              disabled={
+                !selectedVersion ||
+                (versions && versions.length === 0 && !selectedVersion)
+              }
+              size="xl"
+              icon={undefined}
+              variant={getButtonVariant()}
+              className={cn("flex-1 rounded-r-none", mainButtonWidth)}
+              heightClassName={mainButtonHeight}
+            >
+              {renderLaunchButtonContent()}
+            </Button>
+            {isButtonLaunching && showLaunchProgress && (
+              <LaunchProgressBar
+                progress={launchProgress}
+                className="pointer-events-none absolute inset-x-5 bottom-[7px]"
+              />
+            )}
+          </div>
 
           <IconButton
             onClick={handleOpenModal}

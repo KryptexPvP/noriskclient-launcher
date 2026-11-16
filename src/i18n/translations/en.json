@@ -3149,5 +3149,8 @@
   "support_request.preview.empty": "(empty)",
   "support_request.preview.partial": "Not everything is shown here – everything is sent.",
   "support_request.error.other_account_button": "Try another account",
-  "support_request.error.busy": "One moment, still working."
+  "support_request.error.busy": "One moment, still working.",
+  "settings.launch_progress": "Progress bar on Play button",
+  "settings.launch_progress.tooltip": "Show how far downloads and installation are while the game starts.",
+  "launch.progress_label": "Launch progress"
 }

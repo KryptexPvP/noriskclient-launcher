@@ -10,7 +10,8 @@ export enum LaunchState {
 interface ProfileLaunchState {
   launchState: LaunchState;
   currentStep: string;
-  launchProgress: number;
+  /** Progress of the current launch step (0–1), null when the backend sends none. */
+  launchProgress: number | null;
   error: string | null;
   logHistory: string[];
   isButtonLaunching: boolean;
@@ -31,7 +32,7 @@ interface LaunchStateStore {
   getProfileState: (profileId: string) => ProfileLaunchState;
   resetLaunchState: (profileId: string) => void;
   setButtonLaunchingState: (profileId: string, isLaunching: boolean) => void;
-  setButtonStatusMessage: (profileId: string, message: string | null) => void;
+  setButtonStatusMessage: (profileId: string, message: string | null, progress?: number | null) => void;
   initiateButtonLaunch: (profileId: string) => void;
   finalizeButtonLaunch: (profileId: string, errorMsg?: string | null) => void;
 }
@@ -39,7 +40,7 @@ interface LaunchStateStore {
 export const DEFAULT_PROFILE_STATE: ProfileLaunchState = {
   launchState: LaunchState.IDLE,
   currentStep: "",
-  launchProgress: 0,
+  launchProgress: null,
   error: null,
   logHistory: [],
   isButtonLaunching: false,
@@ -153,7 +154,7 @@ export const useLaunchStateStore = create<LaunchStateStore>((set, get) => ({
               ...state.profiles[profileId],
               launchState: LaunchState.IDLE,
               currentStep: "",
-              launchProgress: 0,
+              launchProgress: null,
               error: null,
               isButtonLaunching: false,
               buttonStatusMessage: null,
@@ -184,7 +185,7 @@ export const useLaunchStateStore = create<LaunchStateStore>((set, get) => ({
     });
   },
 
-  setButtonStatusMessage: (profileId: string, message: string | null) => {
+  setButtonStatusMessage: (profileId: string, message: string | null, progress?: number | null) => {
     set((state) => {
       if (!state.profiles[profileId]) {
         state.initializeProfile(profileId);
@@ -197,6 +198,7 @@ export const useLaunchStateStore = create<LaunchStateStore>((set, get) => ({
           [profileId]: {
             ...currentProfile,
             buttonStatusMessage: message,
+            ...(progress !== undefined ? { launchProgress: progress } : {}),
           },
         },
       };
@@ -217,6 +219,7 @@ export const useLaunchStateStore = create<LaunchStateStore>((set, get) => ({
             ...currentProfile,
             isButtonLaunching: true,
             buttonStatusMessage: "Starting profile...",
+            launchProgress: null,
             error: null,
             launchState: LaunchState.LAUNCHING,
           },
